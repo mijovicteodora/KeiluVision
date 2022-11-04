@@ -1,0 +1,496 @@
+C51 COMPILER V8.16   PARKING                                                               01/19/2022 00:41:56 PAGE 1   
+
+
+C51 COMPILER V8.16, COMPILATION OF MODULE PARKING
+OBJECT MODULE PLACED IN parking.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE parking.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "display.h"
+   2          
+   3          unsigned char trenutnoStanjeSoftP00 = 1;
+   4          unsigned char prethodnoStanjeHardP00 = 1;
+   5          unsigned char trenutnoStanjeHardP00 = 1;
+   6          unsigned char trenutnoStanjeSoftP00_zaMain = 1;
+   7          unsigned char prethodnoStanjeSoftP00_zaMain = 1;
+   8          
+   9          unsigned char trenutnoStanjeSoftP01 = 1;
+  10          unsigned char prethodnoStanjeHardP01 = 1;
+  11          unsigned char trenutnoStanjeHardP01 = 1;
+  12          unsigned char trenutnoStanjeSoftP01_zaMain = 1;
+  13          unsigned char prethodnoStanjeSoftP01_zaMain = 1;
+  14          
+  15          unsigned char trenutnoStanjeSoftP02 = 1;
+  16          unsigned char prethodnoStanjeHardP02 = 1;
+  17          unsigned char trenutnoStanjeHardP02 = 1;
+  18          unsigned char trenutnoStanjeSoftP02_zaMain = 1;
+  19          unsigned char prethodnoStanjeSoftP02_zaMain = 1;
+  20          
+  21          unsigned char trenutnoStanjeSoftP03 = 1;
+  22          unsigned char prethodnoStanjeHardP03 = 1;
+  23          unsigned char trenutnoStanjeHardP03 = 1;
+  24          unsigned char trenutnoStanjeSoftP03_zaMain = 1;
+  25          unsigned char prethodnoStanjeSoftP03_zaMain = 1;
+  26          
+  27          unsigned char brPonavljanjaP00 = 0;
+  28          unsigned char brPonavljanjaP01 = 0;
+  29          unsigned char brPonavljanjaP02 = 0;
+  30          unsigned char brPonavljanjaP03 = 0;
+  31          
+  32          unsigned char* greska = "Greska!\r\n";
+  33          unsigned char* greska1 = "Prekoracenje!\r\n";
+  34          
+  35          unsigned char* pok;
+  36          unsigned char pok1[8];
+  37          unsigned char pok2[8];
+  38          
+  39          unsigned char brojacPrekida1 = 0;
+  40          unsigned char status = 0;
+  41          char buffer_it = 0; 
+  42          char buffer[20];
+  43          
+  44          int i = 0;
+  45          int j;
+  46          
+  47          unsigned char slob = 15;
+  48          
+  49          unsigned char ulaz = 0;
+  50          unsigned char izlaz = 0;
+  51          unsigned char rampa = 0;
+  52          unsigned char motor = 0;  
+  53          
+  54          void parsiraj_poruku()
+  55          {
+C51 COMPILER V8.16   PARKING                                                               01/19/2022 00:41:56 PAGE 2   
+
+  56   1              if (buffer[0] == '(' && buffer[1] == 'I' && buffer[2] == 'Z' && buffer[3] == 'L' && buffer[4] == 'A' && b
+             -uffer[5] == 'Z' && buffer[6] == ')')
+  57   1              {
+  58   2                      i = 0;
+  59   2      
+  60   2                      while(buffer[i+1] != ')')
+  61   2                      {
+  62   3                              i++;
+  63   3                      }
+  64   2                      if(i > 8)
+  65   2                      {
+  66   3                              pok = greska1;
+  67   3                      } 
+  68   2                      else
+  69   2                      {
+  70   3                              i = 0;
+  71   3                              j = 1;
+  72   3      
+  73   3                              while(buffer[j] != ')')
+  74   3                              {
+  75   4                                      pok1[i] = buffer[j];
+  76   4                                      i++;
+  77   4                                      j++;
+  78   4                              }
+  79   3      
+  80   3                              pok1[i] = '\n';
+  81   3                              pok = pok1;
+  82   3      
+  83   3                              izlaz = 1;
+  84   3                      }
+  85   2      
+  86   2                      clearDisplay();
+  87   2                      writeLine(pok1);        
+  88   2              }
+  89   1              else if (buffer[0] == '(' && buffer[1] == 'U' && buffer[2] == 'L' && buffer[3] == 'A' && buffer[4] == 'Z'
+             - && buffer[5] == ')' )
+  90   1              {
+  91   2                      i = 0;
+  92   2      
+  93   2                      while(buffer[i+1] != ')')
+  94   2                      {
+  95   3                              i++;
+  96   3                      }
+  97   2      
+  98   2                      if(i > 8)
+  99   2                      {
+ 100   3                              pok = greska1;
+ 101   3                      } 
+ 102   2                      else
+ 103   2                      {
+ 104   3                              i = 0;
+ 105   3                              j = 1;
+ 106   3      
+ 107   3                              while(buffer[j] != ')')
+ 108   3                              {
+ 109   4                                      pok2[i] = buffer[j];
+ 110   4                                      i++;
+ 111   4                                      j++;
+ 112   4                              }
+ 113   3      
+ 114   3                          pok2[i] = '\n';
+ 115   3                              pok = pok2;
+C51 COMPILER V8.16   PARKING                                                               01/19/2022 00:41:56 PAGE 3   
+
+ 116   3      
+ 117   3                              ulaz = 1;
+ 118   3                      }
+ 119   2      
+ 120   2                      //newLine();
+ 121   2                      clearDisplay();
+ 122   2                      writeLine(pok2);        
+ 123   2              }
+ 124   1              else if (buffer[0] == '(' && buffer[1] == 'S' && buffer[2] == 'T' && buffer[3] == ')')
+ 125   1              {
+ 126   2                      i = 0;
+ 127   2      
+ 128   2                      while(buffer[i+1] != ')')
+ 129   2                      {
+ 130   3                              i++;
+ 131   3                      }
+ 132   2      
+ 133   2                      if(i > 8)
+ 134   2                      {
+ 135   3                              pok = greska1;
+ 136   3                      }
+ 137   2                      else if (slob > 15 || slob < 0)
+ 138   2                      {
+ 139   3                              pok = greska;
+ 140   3                      }
+ 141   2                      else if (slob == 15)
+ 142   2                      {
+ 143   3                              pok = "S: 15\r\n";
+ 144   3                      }
+ 145   2                      else if (slob == 14)
+ 146   2                      {
+ 147   3                              pok = "S: 14\r\n";
+ 148   3                      }
+ 149   2                      else if (slob == 13)
+ 150   2                      {
+ 151   3                              pok = "S: 13\r\n";
+ 152   3                      }
+ 153   2                      else if (slob == 12)
+ 154   2                      {
+ 155   3                              pok = "S: 12\r\n";
+ 156   3                      }
+ 157   2                      else if (slob == 11)
+ 158   2                      {
+ 159   3                              pok = "S: 11\r\n";
+ 160   3                      }
+ 161   2                      if (slob == 10)
+ 162   2                      {
+ 163   3                              pok = "S: 10\r\n";
+ 164   3                      }
+ 165   2                      else if (slob == 9)
+ 166   2                      {
+ 167   3                              pok = "S: 9\r\n";
+ 168   3                      }
+ 169   2                      else if (slob == 8)
+ 170   2                      {
+ 171   3                              pok = "S: 8\r\n";
+ 172   3                      }
+ 173   2                      else if (slob == 7)
+ 174   2                      {
+ 175   3                              pok = "S: 7\r\n";
+ 176   3                      }
+ 177   2                      else if (slob == 6)
+C51 COMPILER V8.16   PARKING                                                               01/19/2022 00:41:56 PAGE 4   
+
+ 178   2                      {
+ 179   3                              pok = "S: 6\r\n";
+ 180   3                      }
+ 181   2                      else if (slob == 5)
+ 182   2                      {
+ 183   3                              pok = "S: 5\r\n";
+ 184   3                      }
+ 185   2                      else if (slob == 4)
+ 186   2                      {
+ 187   3                              pok = "S: 4\r\n";
+ 188   3                      }
+ 189   2                      else if (slob == 3)
+ 190   2                      {
+ 191   3                              pok = "S: 3\r\n";
+ 192   3                      }
+ 193   2                      else if (slob == 2)
+ 194   2                      {
+ 195   3                              pok = "S: 2\r\n";
+ 196   3                      }
+ 197   2                      else if (slob == 1)
+ 198   2                      {
+ 199   3                              pok = "S: 1\r\n";
+ 200   3                      }
+ 201   2                      else if (slob == 0)
+ 202   2                      {
+ 203   3                              pok = "S: 0\r\n";
+ 204   3                      }  
+ 205   2      
+ 206   2                      //newLine();
+ 207   2                      clearDisplay();
+ 208   2                      writeLine(pok); 
+ 209   2              }
+ 210   1              else if (buffer[0] == '(' && buffer[1] == 'C' && buffer[2] == 'L' && buffer[3] == 'R' && buffer[4] == ')'
+             -)
+ 211   1              {
+ 212   2                      clearDisplay();
+ 213   2                      //pok = clr;
+ 214   2              }
+ 215   1              else if (buffer[0] == '(' && buffer[1] == 'I' && buffer[2] == 'N' && buffer[3] == 'I' && buffer[4] == 'T'
+             - && buffer[5] == ')')
+ 216   1              {
+ 217   2                      initDisplay();
+ 218   2                      //pok = init;
+ 219   2              }
+ 220   1              else
+ 221   1              {
+ 222   2                      pok = greska;
+ 223   2              } 
+ 224   1               
+ 225   1               SBUF = *pok;
+ 226   1      
+ 227   1               buffer[0] = '\0';
+ 228   1               buffer_it = 0;
+ 229   1      }
+ 230          
+ 231          void serijska_interrupt(void) interrupt 4
+ 232          {
+ 233   1              if(RI)
+ 234   1              {
+ 235   2                      char prijem;
+ 236   2      
+ 237   2                      RI = 0;
+C51 COMPILER V8.16   PARKING                                                               01/19/2022 00:41:56 PAGE 5   
+
+ 238   2      
+ 239   2                      prijem = SBUF;
+ 240   2      
+ 241   2                      if (prijem == '(')
+ 242   2                      {
+ 243   3                              buffer_it = 0;
+ 244   3                      }
+ 245   2      
+ 246   2                      buffer[buffer_it] = prijem;
+ 247   2      
+ 248   2                      if (prijem == ')')
+ 249   2                      {
+ 250   3                              parsiraj_poruku();
+ 251   3                      }
+ 252   2      
+ 253   2                      buffer_it = (buffer_it + 1) % 20;
+ 254   2              }
+ 255   1      
+ 256   1              if (TI)
+ 257   1              {
+ 258   2                      TI = 0;
+ 259   2      
+ 260   2                      pok++;
+ 261   2      
+ 262   2                      if (*pok != '\0')
+ 263   2                      {
+ 264   3                              SBUF = *pok;
+ 265   3                      }
+ 266   2              }
+ 267   1      }
+ 268          
+ 269          void prekid_timer1(void) interrupt 3
+ 270          {       
+ 271   1              
+ 272   1              TH1 = 76;                                                                                                                                                 
+ 273   1              TL1 = 1;
+ 274   1              
+ 275   1              brojacPrekida1++;
+ 276   1      
+ 277   1              if (brojacPrekida1 == 100)
+ 278   1              {       
+ 279   2                      brojacPrekida1 = 0;
+ 280   2                      status = 1;
+ 281   2              }
+ 282   1      
+ 283   1              //TASTER0
+ 284   1              trenutnoStanjeHardP00 = P0_0;
+ 285   1              if(prethodnoStanjeHardP00 == trenutnoStanjeHardP00)      
+ 286   1              {
+ 287   2                      brPonavljanjaP00++;
+ 288   2                      if(brPonavljanjaP00 > 5-1)
+ 289   2                      {
+ 290   3                              trenutnoStanjeSoftP00 = trenutnoStanjeHardP00;
+ 291   3                              brPonavljanjaP00 = 0;
+ 292   3                      }
+ 293   2              }
+ 294   1              else
+ 295   1              {
+ 296   2                      brPonavljanjaP00 = 0;
+ 297   2              }
+ 298   1      
+ 299   1              prethodnoStanjeHardP00 = trenutnoStanjeHardP00;
+C51 COMPILER V8.16   PARKING                                                               01/19/2022 00:41:56 PAGE 6   
+
+ 300   1      
+ 301   1      
+ 302   1              //TASTER1
+ 303   1              trenutnoStanjeHardP01 = P0_1;
+ 304   1              if(prethodnoStanjeHardP01 == trenutnoStanjeHardP01)      
+ 305   1              {
+ 306   2                      brPonavljanjaP01++;
+ 307   2      
+ 308   2                      if(brPonavljanjaP01 > 5-1)
+ 309   2                      {
+ 310   3                              trenutnoStanjeSoftP01 = trenutnoStanjeHardP01;
+ 311   3                              brPonavljanjaP01 = 0;
+ 312   3                      }
+ 313   2              }
+ 314   1              else
+ 315   1              {
+ 316   2                      brPonavljanjaP01 = 0;
+ 317   2              }
+ 318   1      
+ 319   1              prethodnoStanjeHardP01 = trenutnoStanjeHardP01;
+ 320   1      
+ 321   1      
+ 322   1              //TASTER2
+ 323   1              trenutnoStanjeHardP02 = P0_2;
+ 324   1              if(prethodnoStanjeHardP02 == trenutnoStanjeHardP02)      
+ 325   1              {
+ 326   2                      brPonavljanjaP02++;
+ 327   2                      if(brPonavljanjaP02 > 5-1)
+ 328   2                      {
+ 329   3                              trenutnoStanjeSoftP02 = trenutnoStanjeHardP02;
+ 330   3                              brPonavljanjaP02 = 0;
+ 331   3                      }
+ 332   2              }
+ 333   1              else
+ 334   1              {
+ 335   2                      brPonavljanjaP02 = 0;
+ 336   2              }
+ 337   1      
+ 338   1              prethodnoStanjeHardP02 = trenutnoStanjeHardP02;
+ 339   1      
+ 340   1      
+ 341   1              //TASTER3
+ 342   1              trenutnoStanjeHardP03 = P0_3;
+ 343   1              if(prethodnoStanjeHardP03 == trenutnoStanjeHardP03)      
+ 344   1              {
+ 345   2                      brPonavljanjaP03++;
+ 346   2                      if(brPonavljanjaP03 > 5-1)
+ 347   2                      {
+ 348   3                              trenutnoStanjeSoftP03 = trenutnoStanjeHardP03;
+ 349   3                              brPonavljanjaP03 = 0;
+ 350   3                      }
+ 351   2              }
+ 352   1              else
+ 353   1              {
+ 354   2                      brPonavljanjaP03 = 0;
+ 355   2              }
+ 356   1      
+ 357   1              prethodnoStanjeHardP03 = trenutnoStanjeHardP03;
+ 358   1      }
+ 359          
+ 360          void main(void)
+ 361          {
+C51 COMPILER V8.16   PARKING                                                               01/19/2022 00:41:56 PAGE 7   
+
+ 362   1              P2 = 0xff;
+ 363   1              P0 = 0xff;
+ 364   1      
+ 365   1          PCON = 0x80;
+ 366   1              SCON = 0x50; 
+ 367   1              BDRCON = 0x1C;
+ 368   1              BRL = 253;
+ 369   1      
+ 370   1              EA = 1;
+ 371   1              ES = 1;
+ 372   1              TH1 = 76;                                                 
+ 373   1              TL1 = 1;
+ 374   1              TMOD = 0x10;
+ 375   1              ET1 = 1;
+ 376   1              TR1 = 1;
+ 377   1      
+ 378   1              brojacPrekida1 = 0;
+ 379   1              
+ 380   1         /*
+ 381   1              initDisplay();
+ 382   1              clearDisplay();
+ 383   1              writeLine(pok1);
+ 384   1              newLine();
+ 385   1              writeLine(pok2); */
+ 386   1      
+ 387   1              //potpatosni prekidaci
+ 388   1              //P0_0 je za ulaz
+ 389   1              //P0_1 je za izlaz
+ 390   1      
+ 391   1              while(1)
+ 392   1              {
+ 393   2                      /*trenutnoStanjeSoftP00_zaMain = trenutnoStanjeSoftP00;
+ 394   2                      trenutnoStanjeSoftP01_zaMain = trenutnoStanjeSoftP01;
+ 395   2                      trenutnoStanjeSoftP02_zaMain = trenutnoStanjeSoftP02;
+ 396   2                      trenutnoStanjeSoftP03_zaMain = trenutnoStanjeSoftP03; */
+ 397   2      
+ 398   2                      if (P0_0 == 0 && motor == 0)    //pritisnut taster -> 0
+ 399   2                      {
+ 400   3                              ulaz = 1;
+ 401   3                      }
+ 402   2                      else if (P0_1 == 0 && motor == 0)
+ 403   2                      {
+ 404   3                              izlaz = 1;
+ 405   3                      }
+ 406   2      
+ 407   2                      if (P0_2 == 0)  //pritisnut taster -> 0
+ 408   2                      {
+ 409   3                              rampa = 1;      //podignuta rampa
+ 410   3                              P2 = 0x00;
+ 411   3                      }
+ 412   2                      else if (P0_3 == 0)
+ 413   2                      {
+ 414   3                              rampa = 0;      //spustena rampa
+ 415   3                              P2 = 0xFF;
+ 416   3                      }
+ 417   2      
+ 418   2                      if (status)
+ 419   2                      {
+ 420   3                              if (rampa == 0)
+ 421   3                              {
+ 422   4                                      motor = 0;      //rampa je spustena te motor treba iskljuciti
+ 423   4                              }
+C51 COMPILER V8.16   PARKING                                                               01/19/2022 00:41:56 PAGE 8   
+
+ 424   3      
+ 425   3                              if (slob > 0 && ulaz) 
+ 426   3                              {
+ 427   4                                      motor = 1;      //motor ukljucen
+ 428   4                                              
+ 429   4                                      if (rampa)
+ 430   4                                      {
+ 431   5                                              slob--;
+ 432   5                                              ulaz = 0;
+ 433   5                                      }       
+ 434   4                              }
+ 435   3                              else if (slob < 15 && izlaz)
+ 436   3                              {
+ 437   4                                      motor = 1;      //motor ukljucen
+ 438   4      
+ 439   4                                      if (rampa)
+ 440   4                                      {   
+ 441   5                                              slob++;
+ 442   5                                              izlaz = 0;
+ 443   5                                      }
+ 444   4                              }
+ 445   3                              else 
+ 446   3                              {
+ 447   4                                      P2 = 0xFF;
+ 448   4                                      rampa = 0;
+ 449   4                                      motor = 0;
+ 450   4                              }
+ 451   3      
+ 452   3                              status = 0;
+ 453   3                      }       
+ 454   2              }         
+ 455   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1269    ----
+   CONSTANT SIZE    =    144    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     81       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
